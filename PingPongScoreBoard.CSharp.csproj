@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.5f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -103,6 +101,8 @@
     <Compile Include="Assets\Code\Screens\ScreenRanking.cs" />
     <Compile Include="Assets\Code\Screens\ScreenStats.cs" />
     <Compile Include="Assets\Code\Utils\ButtonGeneric.cs" />
+    <Compile Include="Assets\Code\Utils\GuiInputField.cs" />
+    <Compile Include="Assets\Code\Utils\GuiText.cs" />
     <Compile Include="Assets\Code\Utils\TextGeneric.cs" />
     <Compile Include="Assets\Code\Utils\WebCall.cs" />
   </ItemGroup>

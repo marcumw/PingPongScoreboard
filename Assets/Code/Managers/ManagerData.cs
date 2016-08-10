@@ -103,7 +103,7 @@ public class ManagerData  {
     }
     #endregion
 
-    #region matches data
+    #region matches data 
     private void fetchMatchesData()
     {
         foreach (Player player in _players)
@@ -191,6 +191,17 @@ public class ManagerData  {
         Global._global._managerScreens.onMatchDataFetched();
     }
 
+    public void saveMatchData(string date, string name, string score)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("DATE", date);
+        form.AddField("NAME", name);
+        form.AddField("SCORE", score);
+
+        string urlPost = "https://demo1743076.mockable.io/match";
+
+        WWW postRequest = new WWW(urlPost, form);
+    }
     #endregion
 }
 
