@@ -7,9 +7,8 @@ using System.Text.RegularExpressions;
 
 public class ManagerData  {
 
-    public int _countMatchesFetched = 0;
+    public int _countPlayerMatchesFetched = 0;
     public List<Player> _players = new List<Player>();
-
 
     public ManagerData()
     {
@@ -53,7 +52,8 @@ public class ManagerData  {
 
         foreach (PlayerJson player in playersJson)
         {
-            _players.Add(new Player(player.id, player.name));
+            Player newPlayer = new Player(player.id, player.name);
+            _players.Add(newPlayer);
         }
 
         onPlayersDataFetchComplete();
@@ -70,30 +70,30 @@ public class ManagerData  {
     {
         foreach (Player player in _players)
         {
-            fetchMatchesDataByPlayerId(player);
+            fetchMatchesDataByPlayerId(player.Id);
         }
     }
 
-    public void fetchMatchesDataByPlayerId(Player player)
+    public void fetchMatchesDataByPlayerId(int playerId)
     {
-        string urlPlayers = "https://demo1743076.mockable.io/match?player=" + player.Id;
+        string urlPlayers = "https://demo1743076.mockable.io/match?player=" + playerId;
 
         WebCall webCall = new WebCall(Global._global, urlPlayers);
 
         webCall.OnDone += w =>
         {
-            _countMatchesFetched++;
+            _countPlayerMatchesFetched++;
 
             if (w.Error == null)
             {
-                unpackMatchesJson(w.Text, player);
+                unpackMatchesJson(w.Text, playerId);
             }
             else
             {
                 
             }
 
-            if (_countMatchesFetched == _players.Count)
+            if (_countPlayerMatchesFetched == _players.Count)
             {
                 onMatchesDataFetchComplete();
             }
@@ -102,12 +102,14 @@ public class ManagerData  {
         };
     }
 
-    private void unpackMatchesJson(string json, Player player)
+    private void unpackMatchesJson(string json, int playerId)
     {
         string jsonRaw = "{\"matches\":" + Regex.Replace(json, @"\s+", "") + "}";
 
-        JSONArray matchNodes = JSONNode.Parse(jsonRaw)["matches"].AsArray;
         JSONArray playerNodes;
+        JSONArray matchNodes = JSONNode.Parse(jsonRaw)["matches"].AsArray;
+
+        List<Match> matches = new List<Match>();
 
         int countMatches = matchNodes.Count;
 
@@ -121,14 +123,30 @@ public class ManagerData  {
                 playerScores.Add(new PlayerScore(playerNodes[j]["id"].AsInt, playerNodes[j]["score"].AsInt));
             }
 
-            player._matches.Add(new Match(matchNodes[i]["id"].AsInt, matchNodes[i]["timeStart"].Value, playerScores));
+            Match newMatch = new Match(matchNodes[i]["id"].AsInt, matchNodes[i]["timeStart"].Value, playerScores);
+
+            matches.Add(newMatch);
         }
 
-        onMatchesDataFetchComplete();
+        addMatchesByPlayerId(playerId, matches);
+    }
+
+    private void addMatchesByPlayerId(int playerId, List<Match> matches)
+    {
+        foreach (Player player in _players)
+        {
+            if (player.Id == playerId)
+            {
+                player._matches = matches;
+                break;
+            }
+        }
     }
 
     private void onMatchesDataFetchComplete()
     {
+
+        string asdfasd = "stop";
 
     }
 
