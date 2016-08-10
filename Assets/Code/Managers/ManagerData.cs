@@ -63,6 +63,44 @@ public class ManagerData  {
     {
         fetchMatchesData();
     }
+
+    public void fetchPlayerAge(Player player)
+    {
+        string urlPlayer = "https://demo1743076.mockable.io/player/" + player.Id;
+
+        WebCall webCall = new WebCall(Global._global, urlPlayer);
+
+        webCall.OnDone += w =>
+        {
+            if (w.Error == null)
+            {
+                unpackPlayerAgeJson(w.Text);
+            }
+            else
+            {
+                Global._global._managerScreens.onPlayerAgeFetched(true);
+            }
+
+            w.Dispose();
+        };
+
+    }
+
+    private void unpackPlayerAgeJson(string jsonRaw)
+    {
+        string json = Regex.Replace(jsonRaw, @"\s+", "");
+        PlayerJson playerJson = JsonUtility.FromJson<PlayerJson>(jsonRaw);
+
+        foreach (Player player in _players)
+        {
+            if (player.Id == playerJson.id)
+            {
+                player.Age = playerJson.age;
+                Global._global._managerScreens.onPlayerAgeFetched(false);
+                break;
+            }
+        }
+    }
     #endregion
 
     #region matches data
@@ -117,13 +155,13 @@ public class ManagerData  {
         {
             playerNodes = matchNodes[i]["players"].AsArray;
 
-            List<PlayerScore> playerScores = new List<PlayerScore>();
+            List<MatchScore> matchScores = new List<MatchScore>();
             for (int j = 0; j < playerNodes.Count; j++)
             {
-                playerScores.Add(new PlayerScore(playerNodes[j]["id"].AsInt, playerNodes[j]["score"].AsInt));
+                matchScores.Add(new MatchScore(playerNodes[j]["id"].AsInt, playerNodes[j]["score"].AsInt));
             }
 
-            Match newMatch = new Match(matchNodes[i]["id"].AsInt, matchNodes[i]["timeStart"].Value, playerScores);
+            Match newMatch = new Match(matchNodes[i]["id"].AsInt, matchNodes[i]["timeStart"].Value, matchScores);
 
             matches.Add(newMatch);
         }
@@ -137,7 +175,7 @@ public class ManagerData  {
         {
             if (player.Id == playerId)
             {
-                player._matches = matches;
+                player.Matches = matches;
                 break;
             }
         }
@@ -145,9 +183,12 @@ public class ManagerData  {
 
     private void onMatchesDataFetchComplete()
     {
+        foreach (Player player in _players)
+        {
+            Player.setWinsAndLosses(player);
+        }
 
-        string asdfasd = "stop";
-
+        Global._global._managerScreens.onMatchDataFetched();
     }
 
     #endregion
@@ -168,6 +209,7 @@ public class PlayerJson
 {
     public int id;
     public string name;
+    public float age;
 }
 
 #endregion

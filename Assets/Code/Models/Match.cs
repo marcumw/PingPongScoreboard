@@ -2,29 +2,45 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public sealed class Match {
 
     private int _id;
     private DateTime _date;
-    private List<PlayerScore> _playerScores;
+    private List<MatchScore> _playerScores;
+    private int _winnerId;
 
-    public Match(int id, string date, List<PlayerScore> playerScores)
+    public Match(int id, string date, List<MatchScore> matchScores)
     {
         _id = id;
         _date = Convert.ToDateTime(date);
-        _playerScores = playerScores;
+        _playerScores = matchScores;
+
+        _winnerId = _playerScores.OrderByDescending(ps => ps.Score).First().PlayerId;
     }
-}
 
-public sealed class PlayerScore
-{
-    private int _id;
-    private int _score;
-
-    public PlayerScore(int id, int score)
+    public string Id
     {
-        _id = id;
-        _score = score;
+        get
+        {
+            return _id.ToString();
+        }
+    }
+
+    public DateTime Date
+    {
+        get
+        {
+            return _date;
+        }
+    }
+
+    public int WinnerId
+    {
+        get
+        {
+            return _winnerId;
+        }
     }
 }

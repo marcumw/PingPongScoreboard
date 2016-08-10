@@ -87,6 +87,19 @@ public sealed class ManagerScreens {
     }
     #endregion
 
+    #region onDataFetched
+    public void onMatchDataFetched()
+    {
+        _screenRanking.onMatchDataFetched();
+    }
+
+    public void onPlayerAgeFetched(bool error)
+    {
+        _screenStats.onPlayerAgeFetched(error);
+    }
+
+    #endregion
+
 }
 
 public enum ScreenType

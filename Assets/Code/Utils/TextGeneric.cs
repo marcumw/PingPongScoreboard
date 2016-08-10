@@ -20,7 +20,7 @@ public sealed class TextGeneric
     public Vector2 _target;
 
     public TextGeneric(Transform parentTransform, Vector2 target, string name, Vector2 sizeDelta, int fontSize, 
-                                                string textValue = "")
+                                                string textValue = "", TextAnchor anchor = TextAnchor.MiddleCenter)
     {
         //_texture = (Texture2D)Resources.Load(defaultImage);
         //Sprite uiSprite = Sprite.Create(_texture, new Rect(0, 0, _texture.width, _texture.height), new Vector2(0.5f, 0.5f));
@@ -51,7 +51,7 @@ public sealed class TextGeneric
         _uiText.fontSize = _fontSize;
         _uiText.fontStyle = FontStyle.Normal;
 
-        _uiText.alignment = TextAnchor.MiddleCenter;
+        _uiText.alignment = anchor;
         _uiText.rectTransform.anchoredPosition = Vector2.zero;
         _uiText.verticalOverflow = VerticalWrapMode.Overflow;
         _uiText.horizontalOverflow = HorizontalWrapMode.Overflow;
