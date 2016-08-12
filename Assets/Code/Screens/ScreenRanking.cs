@@ -21,10 +21,26 @@ public sealed class ScreenRanking : MenuScreen {
 
         toggleState(false);
 
-        //Global._global.onDelayedCall(.25f, onCheckIfPlayerDataFetched);
+        Global._global.onDelayedCall(.25f, onCheckIfDataFetchComplete);
     }
 
-    public void onMatchDataFetched()
+    private void onCheckIfDataFetchComplete()
+    {
+        if (Global._global._managerData._complete)
+        {
+            onDataFetchComplete();
+        }
+        else if (Global._global._managerData._error)
+        {
+            _textHeader._uiText.text = "Error";
+        }
+        else
+        {
+            Global._global.onDelayedCall(.25f, onCheckIfDataFetchComplete);
+        }
+    }
+
+    private void onDataFetchComplete()
     {
         _textHeader._uiText.text = "Player Rankings";
         _btnCreateButton._go.SetActive(true);

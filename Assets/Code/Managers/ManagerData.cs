@@ -8,7 +8,12 @@ using System.Text.RegularExpressions;
 public class ManagerData  {
 
     public int _countPlayerMatchesFetched = 0;
+
+    private Player _playerLast;
     public List<Player> _players = new List<Player>();
+
+    public bool _complete = false;
+    public bool _error = false;
 
     public ManagerData()
     {
@@ -38,6 +43,7 @@ public class ManagerData  {
             else
             {
                 _players = null;
+                _error = true;
             }
 
             w.Dispose();
@@ -66,24 +72,16 @@ public class ManagerData  {
 
     public void fetchPlayerAge(Player player)
     {
+        _playerLast = player;
         string urlPlayer = "https://demo1743076.mockable.io/player/" + player.Id;
 
         WebCall webCall = new WebCall(Global._global, urlPlayer);
 
         webCall.OnDone += w =>
         {
-            if (w.Error == null)
-            {
-                unpackPlayerAgeJson(w.Text);
-            }
-            else
-            {
-                Global._global._managerScreens.onPlayerAgeFetched(true);
-            }
-
+            unpackPlayerAgeJson(w.Text);
             w.Dispose();
         };
-
     }
 
     private void unpackPlayerAgeJson(string jsonRaw)
@@ -91,14 +89,13 @@ public class ManagerData  {
         string json = Regex.Replace(jsonRaw, @"\s+", "");
         PlayerJson playerJson = JsonUtility.FromJson<PlayerJson>(jsonRaw);
 
-        foreach (Player player in _players)
+        if (json.Contains("error"))
         {
-            if (player.Id == playerJson.id)
-            {
-                player.Age = playerJson.age;
-                Global._global._managerScreens.onPlayerAgeFetched(false);
-                break;
-            }
+            _playerLast.Age = -1;
+        }
+        else
+        {
+            _playerLast.Age = playerJson.age;
         }
     }
     #endregion
@@ -188,7 +185,7 @@ public class ManagerData  {
             Player.setWinsAndLosses(player);
         }
 
-        Global._global._managerScreens.onMatchDataFetched();
+        _complete = true;
     }
 
     public void saveMatchData(string date, string name, string score)

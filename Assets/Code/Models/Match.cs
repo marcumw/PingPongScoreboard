@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public sealed class Match {
+public struct Match {
 
     private int _id;
     private DateTime _date;

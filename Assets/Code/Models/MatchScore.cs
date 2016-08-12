@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public sealed class MatchScore
+public struct MatchScore
 {
     private int _playerId;
     private int _score;

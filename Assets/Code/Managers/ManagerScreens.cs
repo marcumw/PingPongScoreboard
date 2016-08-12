@@ -86,20 +86,6 @@ public sealed class ManagerScreens {
         toggleScreen(_screenStats, false);
     }
     #endregion
-
-    #region onDataFetched
-    public void onMatchDataFetched()
-    {
-        _screenRanking.onMatchDataFetched();
-    }
-
-    public void onPlayerAgeFetched(bool error)
-    {
-        _screenStats.onPlayerAgeFetched(error);
-    }
-
-    #endregion
-
 }
 
 public enum ScreenType

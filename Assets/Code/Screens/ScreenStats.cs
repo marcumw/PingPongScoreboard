@@ -74,20 +74,8 @@ public sealed class ScreenStats : MenuScreen
         _textLosses = new TextGeneric(_go.transform, target, "header", sizeDeltaHeader, fontSize, "Losses: ", TextAnchor.MiddleLeft);
     }
 
-    public void onPlayerAgeFetched(bool error)
-    {
-        string agePostFix = _currPlayer.Age.ToString();
-
-        if (error)
-            agePostFix = "error";
-
-        _textAge._uiText.text = "Age: " + agePostFix;
-    }
-
     public void showStats(Player player)
     {
-        Global._global._managerData.fetchPlayerAge(player);
-
         _currPlayer = player;
 
         _textName._uiText.text = "Name: " + _currPlayer.Name;
@@ -114,5 +102,38 @@ public sealed class ScreenStats : MenuScreen
 
         _textWins._uiText.text = "Wins: " + _currPlayer.Wins;
         _textLosses._uiText.text = "Losses: " + _currPlayer.Losses;
+
+        if (player.Age == 0)
+        {
+            Global._global._managerData.fetchPlayerAge(player);
+            Global._global.onDelayedCall(.25f, onCheckIfPlayerAgeFetchComplete);
+        }
+        else
+        {
+            updatePlayerAge();
+        }
     }
+
+    private void onCheckIfPlayerAgeFetchComplete()
+    {
+        if (_currPlayer.Age == 0)
+        {
+            Global._global.onDelayedCall(.25f, onCheckIfPlayerAgeFetchComplete);
+        }
+        else
+        {
+            updatePlayerAge();
+        }
+    }
+
+    public void updatePlayerAge()
+    {
+        string agePostFix = _currPlayer.Age.ToString();
+
+        if (_currPlayer.Age == -1)
+            agePostFix = "error";
+
+        _textAge._uiText.text = "Age: " + agePostFix;
+    }
+
 }
